@@ -64,26 +64,32 @@ Consequence: a drone with a Pixhawk, camera and rangefinder weighs more than 250
 
 ## 6. Who does what
 
-| Role | Before the presentation | After (drone) |
-|---|---|---|
-| Lead / integrator | review and merge the PR; turn on GitHub Pages; fill in the team table; run the demo script | operator registration; permits; build and safety |
-| Data and CNN | after training: export real ŷ for 2–3 walls to `web/data/` (format in [web.md](web.md)); test with photos from the rig | run the model on the Pi or the base laptop |
-| Algorithms | nothing new; optionally a step-by-step recursion animation for the site | speed on large walls |
-| Heuristics | battery reserve parameter in `src/pipeline.InspectionConfig` (see below); B from real measurements | turn trips into a MAVLink waypoint mission |
-| Website and design | team names in `web/js/strings.js`; phone testing; rig photos in the site | telemetry bridge to the site (format in [web.md](web.md)) |
+The team has 4 people with the four roles from the assignment. The website and design are an **extra** task for one of the four, not a fifth role.
 
-**Suggestion for Heuristics** (not done in this branch because that file is yours and contributions are graded): add `reserve: float = 0.0` to `InspectionConfig` and use `cfg.battery * (1 - cfg.reserve)` in `zones_to_problem`. Results stay the same by default; the website and the simulation already use 20 %.
+| Role (assignment) | Responsible for (assignment) | New in this project | After the presentation (drone) |
+|---|---|---|---|
+| Lead / integrator | README, schedule, connecting the pipeline, final demo | review the PR; GitHub Pages; demo script below | operator registration; permits; safety |
+| Data and CNN | data, model, training, metrics | after transfer learning: real ŷ in the site (format in [web.md](web.md)) | model on the Pi or the base laptop |
+| Algorithms | data structures, algorithms, complexity, tests | nothing required | speed on large walls |
+| Heuristics | at least two heuristics, comparison, charts | optional: battery reserve parameter (below) | MAVLink mission from the trips |
+| + website and design (one of the four) | | team names in `web/js/strings.js`; phone testing; rig photos | telemetry bridge to the site |
+
+**Suggestion for Heuristics** (not done here because that file is yours and contributions are graded): add `reserve: float = 0.0` to `InspectionConfig` and use `cfg.battery * (1 - cfg.reserve)` in `zones_to_problem`. Default results stay the same; the website already uses 20 %.
+
+**AI-generated code.** The assignment allows it *if the team can explain it line by line*, and everyone is questioned at the defence. The website code is AI-generated: `web/js/core.js` is the same algorithms as `src/`, and `src/ultrasound.py` is commented where it matters. Whoever presents the website should go through these two files before the defence.
 
 ## 7. Plan until the defence
 
-| Due | What | Who |
+The assignment's deadlines (§8) do not move. New tasks are placed so they neither get ahead of them nor get in their way.
+
+| Due | Assignment | Extra (website, ultrasound) |
 |---|---|---|
-| 01.12 | Review and merge the PR; GitHub Pages on; team names | Lead, Website |
-| 08.12 | Hand-held rig: camera + rangefinder; first photos of a real wall | Website + Data |
-| 15.12 | Battery reserve in `src/`; real ŷ for one wall in the site | Heuristics, Data |
-| 08.01 | Real rig photos go through the whole pipeline | everyone |
-| 15.01 | Dress rehearsal: site + slides + the questions in `docs/rabota_v_ekip.md` | everyone |
-| 19–25.01 | Defence | everyone |
+| by 02.12.2026 | teams, roles, topic, repo with README | another team member reviews and merges this PR; GitHub Pages |
+| by 09.12.2026 | data downloaded and split; licence and citation | hand-held rig: camera + rangefinder, first own photos of a wall |
+| by 16.12.2026 | own baseline CNN with learning curves | team names in the site; phone test |
+| by 08.01.2027 | transfer learning; exact algorithm (ALGO); first heuristic (HEUR) | |
+| by 15.01.2027 | connected pipeline; second heuristic; test-set metrics | real ŷ in the site; own photos through the whole pipeline; dress rehearsal |
+| 19–25.01.2027 | defence: HEUR 19.01 (group 2) / 22.01 (group 1); ALGO 25.01; NN the same week | the website is shown in the integrator's demo |
 
 **Demo script (5 minutes):** Home → Monitor (run at ×4) → Analysis (raise the threshold to 0.6 and show the missed-cracks warning) → Route (the race) → On-site check ("Example" button) → How it works.
 

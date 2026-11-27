@@ -294,5 +294,5 @@ export const STRINGS = {
   'ix.r2': ['Данни и невронна мрежа', 'Data and neural network'],
   'ix.r3': ['Алгоритми: зони и сортиране', 'Algorithms: zones and sorting'],
   'ix.r4': ['Евристики: маршрут на дрона', 'Heuristics: drone route'],
-  'ix.teamNote': ['Сайт и дизайн: [ИМЕ]. Попълнете имената в web/js/strings.js.', 'Website and design: [NAME]. Fill in the names in web/js/strings.js.'],
+  'ix.teamNote': ['Сайтът и дизайнът са допълнителна задача на [ИМЕ]. Имената се попълват в web/js/strings.js.', 'The website and design are an extra task of [NAME]. Fill in the names in web/js/strings.js.'],
 };
