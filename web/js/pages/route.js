@@ -89,7 +89,7 @@ function build() {
           h('span', { class: 'small faint', style: 'text-transform:uppercase;letter-spacing:1px' }, t('rt.compare')),
           h('div', { class: 'scrollx' }, h('table', { class: 'mono small' }, h('thead', null, h('tr', null, h('th', null, t('rt.thMethod')), h('th', null, 'm'), h('th', null, t('rt.thGap')), h('th', null, t('rt.thTime')))), E.table)),
           E.convTxt, E.conv))),
-    raceSection(),
+    HAS_RACE ? raceSection() : null,
   );
 }
 
@@ -158,7 +158,7 @@ function toggle() {
 function stop() { clearInterval(timer); S.playing = false; }
 
 // ------------------------------------------------------------------ гонка
-const RG = data.race_grid, RR = RG.length, RC = RG[0].length;
+const RG = data.race_grid || [[1]], RR = RG.length, RC = RG[0].length, HAS_RACE = !!data.race_grid;
 const raceZones = sortZonesByArea(findZones(RG, 8).zones);
 const RP = zonesToProblem(raceZones, RR, { tileM: TM, battery: 80 });
 const RNN = nearestNeighbor(RP);
