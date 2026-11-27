@@ -344,7 +344,7 @@ textbox(s, Inches(0.55), Inches(1.4), Inches(12.2), Inches(5.6), [
     "6. Ioffe, S., Szegedy, C. (2015). Batch Normalization. ICML.",
     "7. Srivastava, N. et al. (2014). Dropout: A Simple Way to Prevent Neural Networks from Overfitting. JMLR.",
     "8. Prins, C. (2004). A simple and effective evolutionary algorithm for the VRP. Computers & OR.",
-    "Код: github.com/<потребител>/nm-cnn-dron-<екип>",
+    "Код: github.com/SimoSabev/nm-cnn-dron-inspektor",
 ], size=15)
 
 prs.save(OUT)
