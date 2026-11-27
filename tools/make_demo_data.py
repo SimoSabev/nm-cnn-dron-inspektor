@@ -90,6 +90,8 @@ def main() -> None:
         "note": "Синтетична стена и вероятности за демонстрация; не са изход от невронната мрежа.",
         "rows": 20, "cols": 30, "tile_m": 0.5, "threshold": 0.32, "image": "assets/wall-demo.jpg",
         "probs": [[round(float(x), 3) for x in row] for row in p],
+        # по-голяма стена за „гонката“ НС срещу ГА: 30 × 50 плочки, 19 зони
+        "race_grid": random_crack_mask(30, 50, 26, max_len=7, seed=34).astype(int).tolist(),
     }
     (ROOT / "data" / "demo.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
     demo_wall(m).save(ROOT / "assets" / "wall-demo.jpg", quality=86)
