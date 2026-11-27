@@ -1,0 +1,25 @@
+name: Тестове / Tests
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Зависимости (без TensorFlow)
+        run: pip install "numpy>=1.26" "matplotlib>=3.8" "pytest>=8.0" "pillow>=10.0"
+      - name: Python тестове
+        run: python -m pytest -q
+      - name: Еталоните за JS са актуални
+        run: |
+          python -m tools.make_golden
+          git diff --exit-code web/tests/golden.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: JS ядрото съвпада с Python
+        run: node --test web/tests/parity.test.mjs
