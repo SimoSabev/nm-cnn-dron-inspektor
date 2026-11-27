@@ -11,30 +11,32 @@ const MOVES_8 = MOVES_4.concat([[-1, -1], [-1, 1], [1, -1], [1, 1]]);
 
 // ---------------------------------------------------------------- АСД: зони
 
-/** Свързани зони от единици (като src/grid_zones.find_zones_iterative). */
+/**
+ * Свързани зони от единици – РЕКУРСИВНО обхождане, като src/grid_zones.find_zones:
+ * от всяка непосетена единица „заливаме“ рекурсивно всички съседни единици.
+ */
 export function findZones(grid, connectivity = 8) {
   const moves = connectivity === 4 ? MOVES_4 : MOVES_8;
   const R = grid.length, C = R ? grid[0].length : 0;
   const labels = grid.map(row => row.map(() => 0));
   const zones = [];
-  for (let r0 = 0; r0 < R; r0++) for (let c0 = 0; c0 < C; c0++) {
-    if (grid[r0][c0] !== 1 || labels[r0][c0] !== 0) continue;
-    const id = zones.length + 1, cells = [], stack = [[r0, c0]];
-    labels[r0][c0] = id;
-    while (stack.length) {
-      const [r, c] = stack.pop();
-      cells.push([r, c]);
-      for (const [dr, dc] of moves) {
-        const nr = r + dr, nc = c + dc;
-        if (nr >= 0 && nr < R && nc >= 0 && nc < C && grid[nr][nc] === 1 && labels[nr][nc] === 0) {
-          labels[nr][nc] = id;
-          stack.push([nr, nc]);
-        }
-      }
+  for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) {
+    if (grid[r][c] === 1 && labels[r][c] === 0) {
+      const cells = [];
+      fill(grid, labels, r, c, zones.length + 1, cells, moves);
+      zones.push(makeZone(zones.length + 1, cells));
     }
-    zones.push(makeZone(id, cells));
   }
   return { zones, labels };
+}
+
+/** Рекурсивно „заливане“ (като _fill в src/grid_zones.py). Дъно: извън решетката, 0 или вече посетена. */
+function fill(grid, labels, r, c, id, cells, moves) {
+  if (r < 0 || r >= grid.length || c < 0 || c >= grid[0].length) return;
+  if (grid[r][c] !== 1 || labels[r][c] !== 0) return;
+  labels[r][c] = id;            // маркираме – повече няма да влезем тук
+  cells.push([r, c]);
+  for (const [dr, dc] of moves) fill(grid, labels, r + dr, c + dc, id, cells, moves);
 }
 
 function makeZone(id, cells) {

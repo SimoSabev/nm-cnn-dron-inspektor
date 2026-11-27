@@ -2,6 +2,7 @@
 import { t, onLang } from '../i18n.js';
 import { h, topbar, footer, loadDemo, wallView, pct, m2tile, fmt, fmtClock, DRONE_SVG } from '../ui.js';
 import { Mission, SIM } from '../sim.js';
+import { findZones } from '../core.js';
 
 topbar('monitor.html');
 footer();
@@ -117,20 +118,9 @@ function stageList(T) {
 }
 
 function liveZones() {
-  const seen = new Uint8Array(R * C); let n = 0;
-  for (let i = 0; i < R * C; i++) {
-    const r = Math.floor(i / C), c = i % C;
-    if (seen[i] || !M.scanned[i] || data.probs[r][c] < THR) continue;
-    n++; const st = [i]; seen[i] = 1;
-    while (st.length) {
-      const k = st.pop(), a = Math.floor(k / C), b = k % C;
-      for (let x = -1; x <= 1; x++) for (let y = -1; y <= 1; y++) {
-        const rr = a + x, cc = b + y, j = rr * C + cc;
-        if (rr >= 0 && cc >= 0 && rr < R && cc < C && !seen[j] && M.scanned[j] && data.probs[rr][cc] >= THR) { seen[j] = 1; st.push(j); }
-      }
-    }
-  }
-  return n;
+  // зоните само от вече заснетите плочки – същото рекурсивно обхождане като в АСД
+  const grid = data.probs.map((row, r) => row.map((p, c) => (M.scanned[r * C + c] && p >= THR ? 1 : 0)));
+  return findZones(grid, 8).zones.length;
 }
 
 function update() {
