@@ -1,0 +1,14 @@
+# данни и модели – не се качват
+data/raw/
+data/*.zip
+data/*.rar
+models/
+*.keras
+*.h5
+results/split.json
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/

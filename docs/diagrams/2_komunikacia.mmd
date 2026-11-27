@@ -1,0 +1,30 @@
+sequenceDiagram
+    autonumber
+    participant Д as 🚁 Дрон / камера
+    participant T as tiling.py
+    participant CNN as CNN модел (Keras)
+    participant G as grid_zones.py (АСД)
+    participant P as pipeline.py (интегратор)
+    participant R as route_planning.py (ЕМП)
+    participant И as 👷 Инженер
+
+    Д->>T: снимка на стената (H×W×3, uint8)
+    T->>T: допълване до кратно на 227 (reflect)
+    T->>CNN: плочки (R·C, 227, 227, 3)
+    CNN-->>T: вероятности ŷ (R·C,) float
+    T->>P: карта 0/1 (R×C, int8) = ŷ ≥ праг
+    P->>G: find_zones(карта, connectivity=8)
+    G-->>P: зони [клетки, площ, център] + матрица с етикети
+    P->>G: sort_zones_by_area(зони)
+    G-->>P: зони, №1 = най-голямата
+    P->>R: RoutingProblem(точки в m, енергия за оглед, батерия B)
+    par евристики
+        R-->>P: nearest_neighbor → рейсове, разстояние, време
+    and
+        R-->>P: genetic_algorithm → рейсове, разстояние, история
+    and само при n ≤ 8
+        R-->>P: exact_solution → оптимум (за сравнение)
+    end
+    P->>P: is_feasible() за всяко решение
+    P-->>И: отчет: зони + рейсове + графики
+    P-->>Д: план на повторния полет (най-добрите рейсове)

@@ -1,0 +1,48 @@
+flowchart TB
+    subgraph IN["📷 ВХОД"]
+        A["Дрон снима стената<br/>снимка H × W × 3 (RGB)"]
+    end
+
+    subgraph NM["🧠 НМ – Невронни мрежи (01_NM_CNN_pukmatini.ipynb)"]
+        B["Нарязване на плочки 227 × 227<br/><i>tiling.slice_into_tiles</i><br/>→ R·C плочки + размер (R, C)"]
+        C["Предобработка<br/>227 → 128 (собствен CNN) / 160 (MobileNetV2)"]
+        D["CNN модел<br/>собствен CNN  или  MobileNetV2"]
+        E["Вероятност ŷ ∈ (0,1) за всяка плочка"]
+        F{"ŷ ≥ праг?<br/>праг от валидационното<br/>(пълнота ≥ 99 %)"}
+        G["Карта 0/1, R × C<br/><i>results/crack_map.npy</i>"]
+    end
+
+    subgraph ASD["🧮 АСД – Алгоритми (02_ASD_zoni_s_pukmatini.ipynb)"]
+        H["Рекурсивно обхождане (flood fill)<br/>8 съседа · O(R·C)<br/><i>grid_zones.find_zones</i>"]
+        I["Зони: клетки, площ, център, обхват"]
+        J["Сортиране чрез сливане по площ<br/>O(k log k)<br/><i>grid_zones.sort_zones_by_area</i>"]
+    end
+
+    subgraph EMP["🧭 ЕМП – Евристики (03_EMP_marshrut_na_drona.ipynb)"]
+        K["Задача за маршрута<br/>база + центрове (m) · матрица на разстоянията<br/>енергия за оглед ~ площ · батерия B<br/><i>pipeline.zones_to_problem</i>"]
+        L1["Най-близък съсед<br/>O(n²)"]
+        L2["Генетичен алгоритъм<br/>OX · мутация · елитизъм<br/>+ split (DP) по батерията"]
+        L3["Точно решение<br/>n! пермутации + split<br/>само при n ≤ 8"]
+        M["Сравнение: дължина, рейсове, време<br/>отклонение от оптимума"]
+    end
+
+    subgraph OUT["✅ ИЗХОД (pipeline.py – интегратор)"]
+        N["План за повторния полет<br/>рейсове База→#i→…→База<br/>+ отчет за инженера"]
+    end
+
+    A --> B --> C --> D --> E --> F
+    F -- "да → 1" --> G
+    F -- "не → 0" --> G
+    G --> H --> I --> J --> K
+    K --> L1 & L2 & L3
+    L1 & L2 & L3 --> M --> N
+    N -. "дронът изпълнява рейсовете,<br/>снима отблизо" .-> A
+
+    classDef nm fill:#e8f0fe,stroke:#1a73e8,color:#0b2a55
+    classDef asd fill:#e6f4ea,stroke:#188038,color:#0d3b1e
+    classDef emp fill:#fef7e0,stroke:#e37400,color:#4a2800
+    classDef io fill:#f3e8fd,stroke:#8430ce,color:#2d0b4e
+    class B,C,D,E,F,G nm
+    class H,I,J asd
+    class K,L1,L2,L3,M emp
+    class A,N io
